@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	// "github.com/linothomas14/product-transaction-api/entity"
+	"github.com/linothomas14/product-transaction-api/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -34,7 +34,7 @@ func SetupDatabaseConnection() *gorm.DB {
 		panic("Failed to create a connection to DB")
 	}
 
-	// db.Debug().AutoMigrate(&entity.Mahasiswa{}, &entity.Presensi{})
+	db.Debug().AutoMigrate(&model.User{})
 
 	fmt.Println("Successfully connected!")
 	return db
