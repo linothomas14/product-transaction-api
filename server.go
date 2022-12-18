@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/linothomas14/product-transaction-api/config"
 	"gorm.io/gorm"
-	// "gorm.io/gorm"
 )
 
 var (
