@@ -7,11 +7,14 @@ import (
 	// "github.com/linothomas14/product-transaction-api/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/linothomas14/product-transaction-api/config"
+	"gorm.io/gorm"
 	// "gorm.io/gorm"
 )
 
-// var (
-// 	db                  *gorm.DB                       = config.SetupDatabaseConnection()
+var (
+	db *gorm.DB = config.SetupDatabaseConnection()
+
 // 	productRepository repository.ProductRepository = repository.NewProductRepository(db)
 // 	transactionRepository  repository.TransactionRepository  = repository.NewTransactionRepository(db)
 
@@ -20,7 +23,7 @@ import (
 
 // 	productController controller.ProductController = controller.NewProductController(productService)
 // 	transactionController  controller.TransactionController  = controller.NewTransactionController(transactionService)
-// )
+)
 
 func PingHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
@@ -29,9 +32,8 @@ func PingHandler(c *gin.Context) {
 }
 
 func main() {
-	// defer config.CloseDatabaseConnection(db)
+	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
-	
 
 	// mhsRoutes := r.Group("products")
 	// {
@@ -49,7 +51,7 @@ func main() {
 	// 	transactionRoutes.POST("/", transactionController.Insert)
 	// 	transactionRoutes.PUT("/:id", productController.FindbyID)
 	// 	transactionRoutes.DELETE("/:id", transactionController.Delete)
-		
+
 	// }
 	r.GET("ping", PingHandler)
 	r.Run()
