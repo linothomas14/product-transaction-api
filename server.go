@@ -1,24 +1,30 @@
 package main
 
 import (
-	// "github.com/linothomas14/product-transaction-api/config"
-	// "github.com/linothomas14/product-transaction-api/controller"
-	// "github.com/linothomas14/product-transaction-api/repository"
-	// "github.com/linothomas14/product-transaction-api/service"
+	"github.com/linothomas14/product-transaction-api/controller"
+	"github.com/linothomas14/product-transaction-api/middleware"
+	"github.com/linothomas14/product-transaction-api/repository"
+	"github.com/linothomas14/product-transaction-api/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/linothomas14/product-transaction-api/config"
+
 	"gorm.io/gorm"
 )
 
 var (
 	db *gorm.DB = config.SetupDatabaseConnection()
 
-// 	productRepository repository.ProductRepository = repository.NewProductRepository(db)
-// 	transactionRepository  repository.TransactionRepository  = repository.NewTransactionRepository(db)
+	userRepository repository.UserRepository = repository.NewUserRepository(db)
+	// 	productRepository repository.ProductRepository = repository.NewProductRepository(db)
+	// 	transactionRepository  repository.TransactionRepository  = repository.NewTransactionRepository(db)
+	// jwtService  service.JWTService  = service.NewJWTService()
+	authService service.AuthService = service.NewAuthService(userRepository)
+	jwtService  service.AuthService = service.NewAuthService(userRepository)
+	// 	productService service.ProductService = service.NewProductService(productRepository)
+	// 	transactionService  service.TransactionService  = service.NewTransactionService(transactionRepository, productRepository)
 
-// 	productService service.ProductService = service.NewProductService(productRepository)
-// 	transactionService  service.TransactionService  = service.NewTransactionService(transactionRepository, productRepository)
+	authController controller.AuthController = controller.NewAuthController(authService)
 
 // 	productController controller.ProductController = controller.NewProductController(productService)
 // 	transactionController  controller.TransactionController  = controller.NewTransactionController(transactionService)
@@ -34,24 +40,15 @@ func main() {
 	defer config.CloseDatabaseConnection(db)
 	r := gin.Default()
 
-	// mhsRoutes := r.Group("products")
-	// {
-	// 	mhsRoutes.GET("/", productController.FindAll)
-	// 	mhsRoutes.GET("/:id", productController.FindById)
-	// 	mhsRoutes.POST("/", productController.Insert)
-	// 	mhsRoutes.PUT("/:id", productController.Edit)
-	// 	mhsRoutes.DELETE("/:id", productController.Delete)
-	// }
+	r.POST("/login", authController.Login)
+	r.POST("/register", authController.Register)
 
-	// transactionRoutes := r.Group("transactions")
-	// {
-	// 	transactionRoutes.GET("/", transactionController.FindAll)
-	// 	transactionRoutes.GET("/:id", transactionController.FindById)
-	// 	transactionRoutes.POST("/", transactionController.Insert)
-	// 	transactionRoutes.PUT("/:id", productController.FindbyID)
-	// 	transactionRoutes.DELETE("/:id", transactionController.Delete)
+	userRoutes := r.Group("api/user", middleware.AuthorizeJWT(jwtService))
+	{
+		userRoutes.GET("/profile", PingHandler)
+		// userRoutes.PUT("/profile", userController.Update)
+	}
 
-	// }
 	r.GET("ping", PingHandler)
 	r.Run()
 }
