@@ -6,8 +6,10 @@ import (
 )
 
 type ProductRepository interface {
+	GetAllProduct(product []model.Product) ([]model.Product, error)
 	AddProduct(product model.Product) (model.Product, error)
 	GetProductByName(productName string) (model.Product, error)
+	GetProductById(id uint32) (model.Product, error)
 	UpdateProduct(product model.Product) (model.Product, error)
 	DeleteProduct(idProduct string) error
 }
@@ -22,6 +24,14 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	}
 }
 
+func (db *productConnection) GetAllProduct(product []model.Product) ([]model.Product, error) {
+	var products []model.Product
+
+	err := db.connection.Find(&products).Error
+
+	return products, err
+}
+
 func (db *productConnection) AddProduct(product model.Product) (model.Product, error) {
 
 	err := db.connection.Create(&product).Error
@@ -34,6 +44,15 @@ func (db *productConnection) GetProductByName(productName string) (model.Product
 	var product model.Product
 
 	err := db.connection.Where("name", productName).First(&product).Error
+
+	return product, err
+}
+
+func (db *productConnection) GetProductById(id uint32) (model.Product, error) {
+
+	var product model.Product
+
+	err := db.connection.Where("id", id).First(&product).Error
 
 	return product, err
 }

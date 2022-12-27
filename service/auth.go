@@ -49,7 +49,7 @@ func (service *authService) Login(email string, password string) (string, error)
 	if comparedPassword != true {
 		return "", err
 	}
-	token := service.GenerateToken(strconv.FormatUint(user.ID, 10))
+	token := service.GenerateToken(strconv.FormatUint(uint64(user.ID), 10))
 
 	return token, err
 }

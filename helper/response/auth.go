@@ -5,7 +5,7 @@ type TokenResponse struct {
 }
 
 type RegisterResponse struct {
-	ID    uint64 `json:"id" `
+	ID    uint32 `json:"id" `
 	Email string `json:"email" `
 	Name  string `json:"name" `
 }

@@ -15,18 +15,18 @@ import (
 var (
 	db *gorm.DB = config.SetupDatabaseConnection()
 
-	userRepository repository.UserRepository = repository.NewUserRepository(db)
-	// 	productRepository repository.ProductRepository = repository.NewProductRepository(db)
+	userRepository    repository.UserRepository    = repository.NewUserRepository(db)
+	productRepository repository.ProductRepository = repository.NewProductRepository(db)
 	// 	transactionRepository  repository.TransactionRepository  = repository.NewTransactionRepository(db)
 	// jwtService  service.JWTService  = service.NewJWTService()
-	authService service.AuthService = service.NewAuthService(userRepository)
-	jwtService  service.AuthService = service.NewAuthService(userRepository)
-	// 	productService service.ProductService = service.NewProductService(productRepository)
+	authService    service.AuthService    = service.NewAuthService(userRepository)
+	jwtService     service.AuthService    = service.NewAuthService(userRepository)
+	productService service.ProductService = service.NewProductService(productRepository)
 	// 	transactionService  service.TransactionService  = service.NewTransactionService(transactionRepository, productRepository)
 
-	authController controller.AuthController = controller.NewAuthController(authService)
+	authController    controller.AuthController    = controller.NewAuthController(authService)
+	productController controller.ProductController = controller.NewProductController(productService)
 
-// 	productController controller.ProductController = controller.NewProductController(productService)
 // 	transactionController  controller.TransactionController  = controller.NewTransactionController(transactionService)
 )
 
@@ -48,7 +48,11 @@ func main() {
 		userRoutes.GET("/profile", PingHandler)
 		// userRoutes.PUT("/profile", userController.Update)
 	}
-
+	productRoutes := r.Group("products")
+	{
+		productRoutes.GET("/", productController.GetAllProduct)
+		productRoutes.POST("/", productController.AddProduct)
+	}
 	r.GET("ping", PingHandler)
 	r.Run()
 }
